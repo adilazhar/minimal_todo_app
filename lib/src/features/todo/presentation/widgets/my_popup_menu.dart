@@ -9,22 +9,22 @@ class MyPopupMenu extends ConsumerWidget {
     required this.todo,
     // required this.content,
     // required this.note,
-    // required this.startEdit,
+    required this.startEdit,
   });
 
   final Todo todo;
   // final String content;
   // final Note note;
-  // final void Function() startEdit;
+  final void Function() startEdit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PopupMenuButton<String>(
       onSelected: (String result) {
         switch (result) {
-          // case 'Edit':
-          //   startEdit();
-          //   break;
+          case 'Edit':
+            startEdit();
+            break;
           // case 'Copy':
           //   Clipboard.setData(ClipboardData(text: content)).then((_) {
           //     ScaffoldMessenger.of(context).showSnackBar(
