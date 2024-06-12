@@ -24,22 +24,25 @@ class _TodoItemState extends ConsumerState<TodoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: Text(widget.todo.todoIndex.toString()),
-        title: TextField(
-          controller: _controller,
-          maxLines: null,
-          readOnly: !isEditing,
-          focusNode: _focusNode,
-          ignorePointers: !isEditing,
-          decoration: const InputDecoration.collapsed(hintText: ""),
-          onTapOutside: (event) => endEditing(),
-          onEditingComplete: () => endEditing(),
-        ),
-        trailing: MyPopupMenu(
-          todo: widget.todo,
-          startEdit: startEditing,
+    return GestureDetector(
+      onDoubleTap: () => startEditing(),
+      child: Card(
+        child: ListTile(
+          leading: Text(widget.todo.todoIndex.toString()),
+          title: TextField(
+            controller: _controller,
+            maxLines: null,
+            readOnly: !isEditing,
+            focusNode: _focusNode,
+            ignorePointers: !isEditing,
+            decoration: const InputDecoration.collapsed(hintText: ""),
+            onTapOutside: (event) => endEditing(),
+            onEditingComplete: () => endEditing(),
+          ),
+          trailing: MyPopupMenu(
+            todo: widget.todo,
+            startEdit: startEditing,
+          ),
         ),
       ),
     );
