@@ -46,4 +46,20 @@ class TodosController extends _$TodosController {
     }
     state = filteredList;
   }
+
+  Future<void> reorderNote(int oldIndex, int newIndex) async {
+    List<Todo> newState = List.from(state);
+
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
+    final item = newState.removeAt(oldIndex);
+    state = newState;
+    newState.insert(newIndex, item);
+
+    state = newState;
+
+    await _todosRepository.reorderNote(oldIndex, newIndex, item.id);
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
@@ -7,14 +8,10 @@ class MyPopupMenu extends ConsumerWidget {
   const MyPopupMenu({
     super.key,
     required this.todo,
-    // required this.content,
-    // required this.note,
     required this.startEdit,
   });
 
   final Todo todo;
-  // final String content;
-  // final Note note;
   final void Function() startEdit;
 
   @override
@@ -25,13 +22,13 @@ class MyPopupMenu extends ConsumerWidget {
           case 'Edit':
             startEdit();
             break;
-          // case 'Copy':
-          //   Clipboard.setData(ClipboardData(text: content)).then((_) {
-          //     ScaffoldMessenger.of(context).showSnackBar(
-          //       const SnackBar(content: Text('Copied to clipboard !')),
-          //     );
-          //   });
-          //   break;
+          case 'Copy':
+            Clipboard.setData(ClipboardData(text: todo.text)).then((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Copied to clipboard !')),
+              );
+            });
+            break;
           case 'Remove':
             {
               showDialog(
@@ -71,10 +68,6 @@ class MyPopupMenu extends ConsumerWidget {
         const PopupMenuItem<String>(
           value: 'Copy',
           child: Text('Copy'),
-        ),
-        const PopupMenuItem<String>(
-          value: 'Change Category',
-          child: Text('Change Category'),
         ),
         const PopupMenuItem<String>(
           value: 'Remove',

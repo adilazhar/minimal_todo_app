@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
 
@@ -9,9 +10,13 @@ class TodoItem extends ConsumerStatefulWidget {
   const TodoItem({
     super.key,
     required this.todo,
+    required this.ind,
+    this.elevation,
   });
 
   final Todo todo;
+  final int ind;
+  final double? elevation;
 
   @override
   ConsumerState<TodoItem> createState() => _TodoItemState();
@@ -27,8 +32,12 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     return GestureDetector(
       onDoubleTap: () => startEditing(),
       child: Card(
+        elevation: widget.elevation,
         child: ListTile(
-          leading: Text(widget.todo.todoIndex.toString()),
+          leading: ReorderableDragStartListener(
+            index: widget.ind,
+            child: const Icon(Icons.drag_handle_rounded),
+          ),
           title: TextField(
             controller: _controller,
             maxLines: null,

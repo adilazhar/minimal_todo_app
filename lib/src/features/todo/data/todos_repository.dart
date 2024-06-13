@@ -67,4 +67,27 @@ class TodosRepository {
       whereArgs: [todo.id],
     );
   }
+
+  Future<void> reorderNote(int oldIndex, int newIndex, String id) async {
+    final db = await _databaseHelper.database;
+
+    if (oldIndex < newIndex) {
+      await db.rawUpdate(
+        'UPDATE ${DatabaseHelper.todoTable} SET ${DatabaseHelper.columnTodoIndex} = ${DatabaseHelper.columnTodoIndex} - 1 WHERE ${DatabaseHelper.columnTodoIndex} > ? AND ${DatabaseHelper.columnTodoIndex} <= ?',
+        [oldIndex, newIndex],
+      );
+    } else {
+      await db.rawUpdate(
+        'UPDATE ${DatabaseHelper.todoTable} SET ${DatabaseHelper.columnTodoIndex} = ${DatabaseHelper.columnTodoIndex} + 1 WHERE ${DatabaseHelper.columnTodoIndex} >= ? AND ${DatabaseHelper.columnTodoIndex} < ?',
+        [newIndex, oldIndex],
+      );
+    }
+
+    await db.update(
+      DatabaseHelper.todoTable,
+      {DatabaseHelper.columnTodoIndex: newIndex},
+      where: '${DatabaseHelper.columnTodoId} = ?',
+      whereArgs: [id],
+    );
+  }
 }
