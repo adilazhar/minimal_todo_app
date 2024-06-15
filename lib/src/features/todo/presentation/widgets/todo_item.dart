@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
+import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
 
 import 'my_popup_menu.dart';
@@ -29,28 +30,64 @@ class _TodoItemState extends ConsumerState<TodoItem> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onDoubleTap: () => startEditing(),
-      child: Card(
-        elevation: widget.elevation,
-        child: ListTile(
-          leading: ReorderableDragStartListener(
-            index: widget.ind,
-            child: const Icon(Icons.drag_handle_rounded),
-          ),
-          title: TextField(
-            controller: _controller,
-            maxLines: null,
-            readOnly: !isEditing,
-            focusNode: _focusNode,
-            ignorePointers: !isEditing,
-            decoration: const InputDecoration.collapsed(hintText: ""),
-            onTapOutside: (event) => endEditing(),
-            onEditingComplete: () => endEditing(),
-          ),
-          trailing: MyPopupMenu(
-            todo: widget.todo,
-            startEdit: startEditing,
+    final isSelectedState = ref.watch(selectionControllerProvider.select(
+      (value) => value.isSelectedState,
+    ));
+    final isSelected = ref.watch(selectionControllerProvider.select(
+      (value) => value.selectedTodos.contains(widget.todo.id),
+    ));
+    return Dismissible(
+      key: widget.key!,
+      onDismissed: (_) {
+        ref.read(todosControllerProvider.notifier).deleteTodo(widget.todo);
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Todo Removed !')));
+      },
+      child: GestureDetector(
+        onDoubleTap: isSelectedState ? null : () => startEditing(),
+        child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: widget.elevation,
+          child: ListTile(
+            onLongPress: () => toggleSelectionState(),
+            onTap: () => isSelectedState ? toggleSelection() : null,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            leading: SizedBox(
+              width: 20,
+              child: isSelectedState
+                  ? IgnorePointer(
+                      child: Checkbox(
+                        value: isSelected,
+                        onChanged: (value) {},
+                      ),
+                    )
+                  : ReorderableDragStartListener(
+                      index: widget.ind,
+                      child: const Icon(Icons.drag_handle_rounded),
+                    ),
+            ),
+            title: TextField(
+              controller: _controller,
+              maxLines: null,
+              readOnly: !isEditing,
+              focusNode: _focusNode,
+              ignorePointers: !isEditing,
+              decoration: const InputDecoration.collapsed(hintText: ""),
+              onTapOutside: (event) => endEditing(),
+              onEditingComplete: () => endEditing(),
+            ),
+            trailing: Visibility(
+              visible: !isSelectedState,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: MyPopupMenu(
+                todo: widget.todo,
+                startEdit: startEditing,
+              ),
+            ),
           ),
         ),
       ),
@@ -92,5 +129,16 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     setState(() {
       isEditing = false;
     });
+  }
+
+  void toggleSelectionState() {
+    ref.read(selectionControllerProvider.notifier).toggleState();
+    toggleSelection();
+  }
+
+  void toggleSelection() {
+    ref
+        .read(selectionControllerProvider.notifier)
+        .toggleSelection(widget.todo.id);
   }
 }

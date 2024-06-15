@@ -24,4 +24,8 @@ class TotalRows extends _$TotalRows {
   void decrementRows() {
     state = state - 1;
   }
+
+  void decreaseRowsBy(int rows) {
+    state = state - rows;
+  }
 }

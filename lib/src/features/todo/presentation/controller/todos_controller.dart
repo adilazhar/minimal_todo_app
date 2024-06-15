@@ -20,6 +20,12 @@ class TodosController extends _$TodosController {
     state = await _todosRepository.getTodos();
   }
 
+  Todo getTodoById(String id) {
+    return state.firstWhere(
+      (element) => element.id == id,
+    );
+  }
+
   Future<void> insertTodo(Todo todo) async {
     await _todosRepository.insertTodo(todo);
     ref.read(totalRowsProvider.notifier).incrementRows();
@@ -45,6 +51,12 @@ class TodosController extends _$TodosController {
       }
     }
     state = filteredList;
+  }
+
+  Future<void> deleteTodosSelection(List<Todo> todosList) async {
+    for (final todo in todosList) {
+      await deleteTodo(todo);
+    }
   }
 
   Future<void> reorderNote(int oldIndex, int newIndex) async {

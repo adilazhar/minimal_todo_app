@@ -53,19 +53,27 @@ class TodosRepository {
   }
 
   Future<void> deleteTodo(Todo todo) async {
+    await deleteTodoSelection([todo]);
+  }
+
+  Future<void> deleteTodoSelection(List<Todo> todosList) async {
     final db = await _databaseHelper.database;
 
-    await db.rawUpdate('''
+    await db.transaction((txn) async {
+      for (final todo in todosList) {
+        await txn.rawUpdate('''
       UPDATE ${DatabaseHelper.todoTable}
       SET ${DatabaseHelper.columnTodoIndex} = ${DatabaseHelper.columnTodoIndex} - 1
       WHERE ${DatabaseHelper.columnTodoIndex} > ?
     ''', [todo.todoIndex]);
 
-    await db.delete(
-      DatabaseHelper.todoTable,
-      where: '${DatabaseHelper.columnTodoId} = ?',
-      whereArgs: [todo.id],
-    );
+        await txn.delete(
+          DatabaseHelper.todoTable,
+          where: '${DatabaseHelper.columnTodoId} = ?',
+          whereArgs: [todo.id],
+        );
+      }
+    });
   }
 
   Future<void> reorderNote(int oldIndex, int newIndex, String id) async {
