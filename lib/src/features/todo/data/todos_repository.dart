@@ -60,17 +60,31 @@ class TodosRepository {
     final db = await _databaseHelper.database;
 
     await db.transaction((txn) async {
+      // First, delete the selected todos
       for (final todo in todosList) {
-        await txn.rawUpdate('''
-      UPDATE ${DatabaseHelper.todoTable}
-      SET ${DatabaseHelper.columnTodoIndex} = ${DatabaseHelper.columnTodoIndex} - 1
-      WHERE ${DatabaseHelper.columnTodoIndex} > ?
-    ''', [todo.todoIndex]);
-
         await txn.delete(
           DatabaseHelper.todoTable,
           where: '${DatabaseHelper.columnTodoId} = ?',
           whereArgs: [todo.id],
+        );
+      }
+
+      // Then, fetch the remaining todos and update their indices
+      final List<Map<String, dynamic>> resultSet =
+          await txn.query(DatabaseHelper.todoTable);
+      // Create a new modifiable list from the result set
+      final List<Map<String, dynamic>> remainingTodos =
+          List<Map<String, dynamic>>.from(resultSet);
+      // Now you can sort this new list
+      remainingTodos.sort((a, b) => a[DatabaseHelper.columnTodoIndex]
+          .compareTo(b[DatabaseHelper.columnTodoIndex]));
+
+      for (int i = 0; i < remainingTodos.length; i++) {
+        await txn.update(
+          DatabaseHelper.todoTable,
+          {DatabaseHelper.columnTodoIndex: i},
+          where: '${DatabaseHelper.columnTodoId} = ?',
+          whereArgs: [remainingTodos[i][DatabaseHelper.columnTodoId]],
         );
       }
     });

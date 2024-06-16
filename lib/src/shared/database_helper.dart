@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -23,6 +24,11 @@ class DatabaseHelper {
   // Make this a singleton class.
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  @visibleForTesting
+  void testSetDatabase(Database db) {
+    _database = db;
+  }
 
   static Database? _database;
   Future<Database> get database async {
