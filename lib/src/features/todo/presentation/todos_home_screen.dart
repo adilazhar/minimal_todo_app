@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minimal_todo_app/src/features/todo/application/total_rows.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 
 import 'widgets/add_todo_dialog.dart';
@@ -12,6 +13,7 @@ class TodosHomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(totalRowsProvider);
     final selectedTodos = ref.watch(selectionControllerProvider.select(
       (value) => value.selectedTodos.length,
     ));

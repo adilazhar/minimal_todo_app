@@ -11,7 +11,6 @@ class TodosController extends _$TodosController {
   @override
   List<Todo> build() {
     _todosRepository = ref.watch(todosRepoProvider);
-    ref.read(totalRowsProvider);
     loadTodos();
     return [];
   }
@@ -67,9 +66,14 @@ class TodosController extends _$TodosController {
     }
 
     final item = newState.removeAt(oldIndex);
-    state = newState;
     newState.insert(newIndex, item);
 
+    // Update the todoIndex property for each Todo
+    for (int i = 0; i < newState.length; i++) {
+      newState[i] = newState[i].copyWith(todoIndex: i);
+    }
+
+    // Set the state with the updated todoIndex properties
     state = newState;
 
     await _todosRepository.reorderNote(oldIndex, newIndex, item.id);
