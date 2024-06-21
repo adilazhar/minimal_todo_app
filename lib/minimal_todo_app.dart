@@ -1,3 +1,4 @@
+import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/utils/setting/data/theme_data.dart';
@@ -20,7 +21,7 @@ class MinimalTodoApp extends ConsumerWidget {
         theme: flexTodoLightTheme,
         darkTheme: flexTodoDarkTheme,
         themeMode: data.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        home: const TodosHomeScreen(),
+        home: const DoubleBack(child: TodosHomeScreen()),
       ),
       error: (error, stackTrace) => const SizedBox(),
       loading: () => const CircularProgressIndicator(),
