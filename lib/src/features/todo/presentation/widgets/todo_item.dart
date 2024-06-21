@@ -50,6 +50,8 @@ class _TodoItemState extends ConsumerState<TodoItem> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: widget.elevation,
           child: ListTile(
+            selected: isSelected,
+            selectedTileColor: Theme.of(context).primaryColor.withAlpha(150),
             onLongPress: () => toggleSelectionState(),
             onTap: () => isSelectedState ? toggleSelection() : null,
             shape:
@@ -68,15 +70,22 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                       child: const Icon(Icons.drag_handle_rounded),
                     ),
             ),
-            title: TextField(
-              controller: _controller,
-              maxLines: null,
-              readOnly: !isEditing,
-              focusNode: _focusNode,
-              ignorePointers: !isEditing,
-              decoration: const InputDecoration.collapsed(hintText: ""),
-              onTapOutside: (event) => endEditing(),
-              onEditingComplete: () => endEditing(),
+            title: Theme(
+              data: Theme.of(context).copyWith(
+                inputDecorationTheme: const InputDecorationTheme(
+                  border: InputBorder.none,
+                ),
+              ),
+              child: TextField(
+                controller: _controller,
+                maxLines: null,
+                readOnly: !isEditing,
+                focusNode: _focusNode,
+                ignorePointers: !isEditing,
+                decoration: const InputDecoration.collapsed(hintText: ""),
+                onTapOutside: (event) => endEditing(),
+                onEditingComplete: () => endEditing(),
+              ),
             ),
             trailing: Visibility(
               visible: !isSelectedState,

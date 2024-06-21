@@ -43,6 +43,7 @@ class TodosListView extends ConsumerWidget {
         : ReorderableListView.builder(
             itemCount: todosList.length,
             buildDefaultDragHandles: false,
+            padding: const EdgeInsets.all(10),
             proxyDecorator: proxyDecor,
             itemBuilder: (context, index) => TodoItem(
               key: ValueKey(todosList[index].id),

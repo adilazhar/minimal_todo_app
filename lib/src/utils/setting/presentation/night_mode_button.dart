@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/utils/setting/presentation/controller/app_setting_controller.dart';
@@ -11,9 +13,14 @@ class NightModeButton extends ConsumerWidget {
       (value) => value.value!.isDarkMode,
     ));
     return IconButton(
-        onPressed: () => ref
-            .read(appSettingControllerProvider.notifier)
-            .updateDarkMode(!isDarkMode),
-        icon: Icon(isDarkMode ? Icons.sunny : Icons.nightlight_rounded));
+      onPressed: () => ref
+          .read(appSettingControllerProvider.notifier)
+          .updateDarkMode(!isDarkMode),
+      icon: isDarkMode
+          ? const Icon(Icons.sunny)
+          : Transform.rotate(
+              angle: -30 * pi / 180,
+              child: const Icon(Icons.nightlight_rounded)),
+    );
   }
 }
