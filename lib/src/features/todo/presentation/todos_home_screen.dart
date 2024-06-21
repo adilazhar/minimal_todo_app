@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/features/todo/application/total_rows.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
+import 'package:minimal_todo_app/src/utils/setting/presentation/night_mode_button.dart';
 
 import 'widgets/add_todo_dialog.dart';
 import 'widgets/todos_list_view.dart';
@@ -22,6 +23,7 @@ class TodosHomeScreen extends ConsumerWidget {
           ? AppBar(
               title: const Text('Todo List'),
               actions: [
+                const NightModeButton(),
                 IconButton(
                     onPressed: () {
                       showAddTodoDialog(context);
