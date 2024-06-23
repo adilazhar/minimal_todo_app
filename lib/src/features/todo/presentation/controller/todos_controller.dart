@@ -8,19 +8,15 @@ part 'todos_controller.g.dart';
 @Riverpod(keepAlive: true)
 class TodosController extends _$TodosController {
   late final TodosRepository _todosRepository;
-  @override
-  List<Todo> build() {
-    _todosRepository = ref.watch(todosRepoProvider);
-    loadTodos();
-    return [];
-  }
 
-  Future<void> loadTodos() async {
-    state = await _todosRepository.getTodos();
+  @override
+  FutureOr<List<Todo>> build() async {
+    _todosRepository = ref.watch(todosRepoProvider);
+    return await _todosRepository.getTodos();
   }
 
   Todo getTodoById(String id) {
-    return state.firstWhere(
+    return state.value!.firstWhere(
       (element) => element.id == id,
     );
   }
@@ -28,12 +24,13 @@ class TodosController extends _$TodosController {
   Future<void> insertTodo(Todo todo) async {
     await _todosRepository.insertTodo(todo);
     ref.read(totalRowsProvider.notifier).incrementRows();
-    state = [...state, todo];
+    state = AsyncData([...state.value!, todo]);
   }
 
   Future<void> updateTodo(Todo todo) async {
     await _todosRepository.updateTodo(todo);
-    state = state.map((t) => t.id == todo.id ? todo : t).toList();
+    state =
+        AsyncData(state.value!.map((t) => t.id == todo.id ? todo : t).toList());
   }
 
   Future<void> deleteTodo(Todo todo) async {
@@ -41,7 +38,7 @@ class TodosController extends _$TodosController {
     ref.read(totalRowsProvider.notifier).decrementRows();
 
     final List<Todo> filteredList = [];
-    for (final t in state) {
+    for (final t in state.value!) {
       if (t.id == todo.id) continue;
       if (t.todoIndex < todo.todoIndex) {
         filteredList.add(t);
@@ -49,7 +46,7 @@ class TodosController extends _$TodosController {
         filteredList.add(t.copyWith(todoIndex: t.todoIndex - 1));
       }
     }
-    state = filteredList;
+    state = AsyncData(filteredList);
   }
 
   Future<void> deleteTodosSelection(List<Todo> todosList) async {
@@ -59,7 +56,7 @@ class TodosController extends _$TodosController {
   }
 
   Future<void> reorderNote(int oldIndex, int newIndex) async {
-    List<Todo> newState = List.from(state);
+    List<Todo> newState = List.from(state.value!);
 
     if (newIndex > oldIndex) {
       newIndex -= 1;
@@ -74,7 +71,7 @@ class TodosController extends _$TodosController {
     }
 
     // Set the state with the updated todoIndex properties
-    state = newState;
+    state = AsyncData(newState);
 
     await _todosRepository.reorderNote(oldIndex, newIndex, item.id);
   }

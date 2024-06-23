@@ -9,17 +9,6 @@ void main() {
     late TodosRepository todosRepository;
     late Database db;
 
-    Future<void> insertSevenTodos() async {
-      // Insert 7 todos
-      for (int i = 1; i <= 7; i++) {
-        await todosRepository.insertTodo(Todo(
-          id: '$i',
-          text: 'Todo $i',
-          todoIndex: i - 1,
-        ));
-      }
-    }
-
     setUp(() async {
       sqfliteFfiInit();
       // Change the default factory
@@ -47,6 +36,17 @@ void main() {
     tearDown(() async {
       await db.close();
     });
+
+    Future<void> insertSevenTodos() async {
+      // Insert 7 todos
+      for (int i = 1; i <= 7; i++) {
+        await todosRepository.insertTodo(Todo(
+          id: '$i',
+          text: 'Todo $i',
+          todoIndex: i - 1,
+        ));
+      }
+    }
 
     test('Insert Todo', () async {
       final todo = Todo.fromText('Test Todo 1', 0);
