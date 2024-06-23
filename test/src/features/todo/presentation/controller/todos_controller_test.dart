@@ -17,6 +17,24 @@ void main() {
   late ProviderContainer container;
   late MockTodosRepository mockTodosRepository;
 
+  ProviderContainer createContainer({
+    ProviderContainer? parent,
+    List<Override> overrides = const [],
+    List<ProviderObserver>? observers,
+  }) {
+    // Create a ProviderContainer, and optionally allow specifying parameters.
+    final container = ProviderContainer(
+      parent: parent,
+      overrides: overrides,
+      observers: observers,
+    );
+
+    // When the test ends, dispose the container.
+    addTearDown(container.dispose);
+
+    return container;
+  }
+
   setUp(() {
     mockTodosRepository = MockTodosRepository();
     when(() => mockTodosRepository.getTodos()).thenAnswer(
@@ -42,14 +60,14 @@ void main() {
     when(() => mockTodosRepository.reorderNote(any(), any(), any()))
         .thenAnswer((_) async {});
 
-    container = ProviderContainer(overrides: [
+    container = createContainer(overrides: [
       todosRepoProvider.overrideWithValue(mockTodosRepository),
     ]);
   });
 
   test('initial state is an empty list', () {
-    final todosController = container.read(todosControllerProvider.notifier);
-    expect(todosController.state, isEmpty);
+    final todosController = container.read(todosControllerProvider);
+    expect(todosController, isEmpty);
     verify(() => mockTodosRepository.getTodos()).called(1);
   });
 
