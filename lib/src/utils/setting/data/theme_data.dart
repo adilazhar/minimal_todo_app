@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData flexTodoLightTheme = FlexThemeData.light(
   colors: const FlexSchemeColor(
-    primary: Color(0xff006781),
+    primary: Color(0xff004881),
     primaryContainer: Color(0xffd0e4ff),
     secondary: Color(0xffac3306),
     secondaryContainer: Color(0xffffdbcf),
@@ -14,12 +14,13 @@ final ThemeData flexTodoLightTheme = FlexThemeData.light(
     error: Color(0xffb00020),
   ),
   surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
-  blendLevel: 1,
+  blendLevel: 2,
   subThemesData: const FlexSubThemesData(
     blendOnLevel: 8,
     blendOnColors: false,
     useTextTheme: true,
     useM2StyleDividerInM3: true,
+    splashType: FlexSplashType.inkRipple,
     defaultRadius: 8.0,
     elevatedButtonSchemeColor: SchemeColor.onPrimaryContainer,
     elevatedButtonSecondarySchemeColor: SchemeColor.primaryContainer,
@@ -36,7 +37,7 @@ final ThemeData flexTodoLightTheme = FlexThemeData.light(
     inputDecoratorPrefixIconSchemeColor: SchemeColor.primary,
     fabUseShape: true,
     fabAlwaysCircular: true,
-    fabSchemeColor: SchemeColor.primary,
+    fabSchemeColor: SchemeColor.tertiary,
     popupMenuRadius: 8.0,
     popupMenuElevation: 3.0,
     alignedDropdown: true,
@@ -67,18 +68,19 @@ final ThemeData flexTodoLightTheme = FlexThemeData.light(
     navigationRailBackgroundSchemeColor: SchemeColor.surface,
   ),
   keyColors: const FlexKeyColors(
+    useSecondary: true,
+    useTertiary: true,
     keepPrimary: true,
   ),
-  tones: FlexTones.jolly(Brightness.light),
+  tones: FlexTones.soft(Brightness.light),
   visualDensity: FlexColorScheme.comfortablePlatformDensity,
   useMaterial3: true,
-  // To use the Playground font, add GoogleFonts package and uncomment
   fontFamily: GoogleFonts.dmMono().fontFamily,
 );
 
 final ThemeData flexTodoDarkTheme = FlexThemeData.dark(
   colors: const FlexSchemeColor(
-    primary: Color(0xff5fd4fe),
+    primary: Color(0xff9fc9ff),
     primaryContainer: Color(0xff00325b),
     secondary: Color(0xffffb59d),
     secondaryContainer: Color(0xff872100),
@@ -94,6 +96,7 @@ final ThemeData flexTodoDarkTheme = FlexThemeData.dark(
     blendTextTheme: true,
     useTextTheme: true,
     useM2StyleDividerInM3: true,
+    splashType: FlexSplashType.inkRipple,
     defaultRadius: 8.0,
     elevatedButtonSchemeColor: SchemeColor.onPrimaryContainer,
     elevatedButtonSecondarySchemeColor: SchemeColor.primaryContainer,
@@ -110,7 +113,7 @@ final ThemeData flexTodoDarkTheme = FlexThemeData.dark(
     inputDecoratorPrefixIconSchemeColor: SchemeColor.primary,
     fabUseShape: true,
     fabAlwaysCircular: true,
-    fabSchemeColor: SchemeColor.primary,
+    fabSchemeColor: SchemeColor.tertiary,
     popupMenuRadius: 8.0,
     popupMenuElevation: 3.0,
     alignedDropdown: true,
@@ -140,10 +143,12 @@ final ThemeData flexTodoDarkTheme = FlexThemeData.dark(
     navigationRailIndicatorRadius: 12.0,
     navigationRailBackgroundSchemeColor: SchemeColor.surface,
   ),
-  keyColors: const FlexKeyColors(),
-  tones: FlexTones.jolly(Brightness.dark),
+  keyColors: const FlexKeyColors(
+    useSecondary: true,
+    useTertiary: true,
+  ),
+  tones: FlexTones.soft(Brightness.dark),
   visualDensity: FlexColorScheme.comfortablePlatformDensity,
   useMaterial3: true,
-  // To use the Playground font, add GoogleFonts package and uncomment
   fontFamily: GoogleFonts.dmMono().fontFamily,
 );

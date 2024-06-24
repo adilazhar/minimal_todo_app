@@ -21,7 +21,9 @@ class MinimalTodoApp extends ConsumerWidget {
         theme: flexTodoLightTheme,
         darkTheme: flexTodoDarkTheme,
         themeMode: data.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        home: const DoubleBack(child: TodosHomeScreen()),
+        home: const DoubleBack(
+          child: TodosHomeScreen(),
+        ),
       ),
       error: (error, stackTrace) => const SizedBox(),
       loading: () => const CircularProgressIndicator(),

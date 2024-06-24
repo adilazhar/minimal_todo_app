@@ -19,16 +19,20 @@ class TodosHomeScreen extends ConsumerWidget {
       (value) => value.selectedTodos.length,
     ));
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.onTertiary,
       appBar: selectedTodos == 0
           ? AppBar(
               title: const Text('Todo List'),
               actions: [
                 const NightModeButton(),
-                IconButton(
-                    onPressed: () {
-                      showAddTodoDialog(context);
-                    },
-                    icon: const Icon(Icons.add_rounded))
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: IconButton(
+                      onPressed: () {
+                        showAddTodoDialog(context);
+                      },
+                      icon: const Icon(Icons.add_rounded)),
+                )
               ],
             )
           : AppBar(

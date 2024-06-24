@@ -37,7 +37,7 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog> {
         ),
       ),
       actions: [
-        ElevatedButton(
+        OutlinedButton(
             onPressed: () {
               Navigator.pop(context);
             },
