@@ -26,8 +26,8 @@ class TodosListView extends ConsumerWidget {
             scale: scale,
             child: TodoItem(
               elevation: elevation,
-              key: ValueKey(todosList[index].id),
-              todo: todosList[index],
+              key: ValueKey(todosList.value![index].id),
+              todo: todosList.value![index],
               ind: index,
             ),
           );
@@ -36,27 +36,35 @@ class TodosListView extends ConsumerWidget {
       );
     }
 
-    return todosList.isEmpty
-        ? const Center(
-            child: Text('Try Adding Some Todos !'),
-          )
-        : ReorderableListView.builder(
-            itemCount: todosList.length,
-            buildDefaultDragHandles: false,
-            padding: const EdgeInsets.all(10),
-            proxyDecorator: proxyDecor,
-            itemBuilder: (context, index) => TodoItem(
-              key: ValueKey(todosList[index].id),
-              todo: todosList[index],
-              ind: index,
+    return todosList.when(
+      data: (data) => data.isEmpty
+          ? const Center(
+              child: Text('Try Adding Some Todos !'),
+            )
+          : ReorderableListView.builder(
+              itemCount: data.length,
+              buildDefaultDragHandles: false,
+              padding: const EdgeInsets.all(10),
+              proxyDecorator: proxyDecor,
+              itemBuilder: (context, index) => TodoItem(
+                key: ValueKey(data[index].id),
+                todo: data[index],
+                ind: index,
+              ),
+              onReorder: (oldIndex, newIndex) {
+                if (oldIndex != newIndex - 1) {
+                  ref
+                      .read(todosControllerProvider.notifier)
+                      .reorderNote(oldIndex, newIndex);
+                }
+              },
             ),
-            onReorder: (oldIndex, newIndex) {
-              if (oldIndex != newIndex - 1) {
-                ref
-                    .read(todosControllerProvider.notifier)
-                    .reorderNote(oldIndex, newIndex);
-              }
-            },
-          );
+      error: (error, stackTrace) => const Center(
+        child: Text('Something Went Wrong'),
+      ),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }

@@ -51,7 +51,9 @@ class _TodoItemState extends ConsumerState<TodoItem> {
           elevation: widget.elevation,
           child: ListTile(
             selected: isSelected,
-            selectedTileColor: Theme.of(context).primaryColor.withAlpha(150),
+            // Todo : Fix The Foucs Color To Something Good Or Remove It If You Can
+            // focusColor: Colors.amber,
+            selectedTileColor: Theme.of(context).primaryColor.withAlpha(100),
             onLongPress: () => toggleSelectionState(),
             onTap: () => isSelectedState ? toggleSelection() : null,
             shape:
