@@ -1,3 +1,4 @@
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:minimal_todo_app/src/features/todo/application/total_rows.dart';
 import 'package:minimal_todo_app/src/features/todo/data/todos_repository.dart';
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
@@ -8,11 +9,21 @@ part 'todos_controller.g.dart';
 @Riverpod(keepAlive: true)
 class TodosController extends _$TodosController {
   late final TodosRepository _todosRepository;
+  bool _isFirstBuild = true;
 
   @override
   FutureOr<List<Todo>> build() async {
     _todosRepository = ref.watch(todosRepoProvider);
-    return await _todosRepository.getTodos();
+    final todosList = await _todosRepository.getTodos();
+    if (_isFirstBuild) {
+      _isFirstBuild = false;
+      Future.microtask(
+        () {
+          FlutterNativeSplash.remove();
+        },
+      );
+    }
+    return todosList;
   }
 
   Todo getTodoById(String id) {
