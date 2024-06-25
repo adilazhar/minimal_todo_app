@@ -12,15 +12,27 @@ class NightModeButton extends ConsumerWidget {
     final isDarkMode = ref.watch(appSettingControllerProvider.select(
       (value) => value.value!.isDarkMode,
     ));
-    return IconButton(
-      onPressed: () => ref
-          .read(appSettingControllerProvider.notifier)
-          .updateDarkMode(!isDarkMode),
-      icon: isDarkMode
-          ? const Icon(Icons.sunny)
-          : Transform.rotate(
-              angle: -30 * pi / 180,
-              child: const Icon(Icons.nightlight_rounded)),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return ScaleTransition(
+          scale: animation,
+          child: child,
+        );
+      },
+      child: IconButton(
+        key: ValueKey<bool>(isDarkMode),
+        onPressed: () => ref
+            .read(appSettingControllerProvider.notifier)
+            .updateDarkMode(!isDarkMode),
+        icon: isDarkMode
+            ? const Icon(
+                Icons.sunny,
+              )
+            : Transform.rotate(
+                angle: -30 * pi / 180,
+                child: const Icon(Icons.nightlight_rounded)),
+      ),
     );
   }
 }

@@ -1,68 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:minimal_todo_app/src/features/todo/application/total_rows.dart';
-import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
-import 'package:minimal_todo_app/src/utils/setting/presentation/night_mode_button.dart';
 
-import 'widgets/add_todo_dialog.dart';
+import 'widgets/animated_app_bar.dart';
 import 'widgets/todos_list_view.dart';
 
-class TodosHomeScreen extends ConsumerWidget {
+class TodosHomeScreen extends StatelessWidget {
   const TodosHomeScreen({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(totalRowsProvider);
-    final selectedTodos = ref.watch(selectionControllerProvider.select(
-      (value) => value.selectedTodos.length,
-    ));
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.onTertiary,
-      appBar: selectedTodos == 0
-          ? AppBar(
-              title: const Text('Todo List'),
-              actions: [
-                const NightModeButton(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 5),
-                  child: IconButton(
-                      onPressed: () {
-                        showAddTodoDialog(context);
-                      },
-                      icon: const Icon(Icons.add_rounded)),
-                )
-              ],
-            )
-          : AppBar(
-              leading: IconButton(
-                  onPressed: () {
-                    ref.read(selectionControllerProvider.notifier).resetState();
-                  },
-                  icon: const Icon(Icons.arrow_back_rounded)),
-              title: Text(selectedTodos.toString()),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).clearSnackBars();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Todos Removed !')));
-                      ref
-                          .read(selectionControllerProvider.notifier)
-                          .onDeleteButton();
-                    },
-                    icon: const Icon(Icons.delete_rounded)),
-              ],
-            ),
+      appBar: const AnimatedAppBar(),
       body: const TodosListView(),
-    );
-  }
-
-  void showAddTodoDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => const AddTodoDialog(),
     );
   }
 }
