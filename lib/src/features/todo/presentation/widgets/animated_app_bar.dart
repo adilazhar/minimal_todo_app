@@ -65,31 +65,7 @@ class AnimatedAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       },
                       icon: const Icon(Icons.delete_rounded)),
                 ],
-        )
-
-        // ? AppBar(
-
-        //   )
-        // : AppBar(
-        // leading: IconButton(
-        //     onPressed: () {
-        //       ref.read(selectionControllerProvider.notifier).resetState();
-        //     },
-        //     icon: const Icon(Icons.arrow_back_rounded)),
-        // actions: [
-        //   IconButton(
-        //       onPressed: () {
-        //         ScaffoldMessenger.of(context).clearSnackBars();
-        //         ScaffoldMessenger.of(context).showSnackBar(
-        //             const SnackBar(content: Text('Todos Removed !')));
-        //         ref
-        //             .read(selectionControllerProvider.notifier)
-        //             .onDeleteButton();
-        //       },
-        //       icon: const Icon(Icons.delete_rounded)),
-        // ],
-        //   ),
-        );
+        ));
   }
 
   void showAddTodoDialog(BuildContext context) {
