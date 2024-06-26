@@ -20,13 +20,6 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
 
   late final AnimationController _animationController;
 
-  void _onDialogDismiss() async {
-    _animationController.reverse();
-    await Future.delayed(const Duration(milliseconds: 600));
-    // ignore: use_build_context_synchronously
-    Navigator.pop(context);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -45,50 +38,47 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) => _onDialogDismiss(),
-      child: AlertDialog(
-        title: const Text('Add Todo :')
+    return AlertDialog(
+      title: const Text('Add Todo :')
+          .animate(controller: _animationController)
+          .fadeIn(delay: 100.ms, duration: 150.ms)
+          .slideY(begin: 0.5, duration: 150.ms),
+      content: SizedBox(
+        width: 300,
+        child: TextField(
+          controller: _controller,
+          autofocus: true,
+          maxLines: null,
+          keyboardType: TextInputType.multiline,
+          textInputAction: TextInputAction.newline,
+        ),
+      )
+          .animate(controller: _animationController)
+          .fadeIn(delay: 200.ms, duration: 150.ms)
+          .slideY(begin: 0.5, duration: 150.ms),
+      actions: [
+        OutlinedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"))
             .animate(controller: _animationController)
-            .fadeIn(delay: 100.ms, duration: 150.ms)
+            .fadeIn(delay: 450.ms, duration: 150.ms)
             .slideY(begin: 0.5, duration: 150.ms),
-        content: SizedBox(
-          width: 300,
-          child: TextField(
-            controller: _controller,
-            autofocus: true,
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            textInputAction: TextInputAction.newline,
-          ),
-        )
+        ElevatedButton(onPressed: saveTodo, child: const Text("Save"))
             .animate(controller: _animationController)
-            .fadeIn(delay: 200.ms, duration: 150.ms)
+            .fadeIn(delay: 450.ms, duration: 150.ms)
             .slideY(begin: 0.5, duration: 150.ms),
-        actions: [
-          OutlinedButton(
-                  onPressed: _onDialogDismiss, child: const Text("Cancel"))
-              .animate(controller: _animationController)
-              .fadeIn(delay: 450.ms, duration: 150.ms)
-              .slideY(begin: 0.5, duration: 150.ms),
-          ElevatedButton(onPressed: saveTodo, child: const Text("Save"))
-              .animate(controller: _animationController)
-              .fadeIn(delay: 450.ms, duration: 150.ms)
-              .slideY(begin: 0.5, duration: 150.ms),
-        ],
-      ).animate(controller: _animationController).addEffects(
-        [
-          FadeEffect(
-            duration: 500.ms,
-          ),
-          MoveEffect(
-            duration: 500.ms,
-            begin: const Offset(0, 50),
-            curve: Curves.easeInOut,
-          ),
-        ],
-      ),
+      ],
+    ).animate(controller: _animationController).addEffects(
+      [
+        FadeEffect(
+          duration: 500.ms,
+        ),
+        MoveEffect(
+          duration: 500.ms,
+          begin: const Offset(0, 50),
+          curve: Curves.easeInOut,
+        ),
+      ],
     );
   }
 
