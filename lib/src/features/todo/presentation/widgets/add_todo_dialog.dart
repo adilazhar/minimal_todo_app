@@ -46,7 +46,7 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) => _onDialogDismiss,
+      onPopInvoked: (didPop) => _onDialogDismiss(),
       child: AlertDialog(
         title: const Text('Add Todo :')
             .animate(controller: _animationController)
@@ -81,13 +81,13 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
   }
 
   void saveTodo() async {
+    Navigator.of(context).pop();
     if (_controller.text.trim().isEmpty) return;
 
     int index = ref.watch(totalRowsProvider);
     ref
         .read(todosControllerProvider.notifier)
         .insertTodo(Todo.fromText(_controller.text.trim(), index));
-    _onDialogDismiss();
 
     if (mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();

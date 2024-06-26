@@ -38,12 +38,7 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     ));
     return Dismissible(
       key: widget.key!,
-      onDismissed: (_) {
-        ref.read(todosControllerProvider.notifier).deleteTodo(widget.todo);
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Todo Removed !')));
-      },
+      onDismissed: (_) => deleteTodo(),
       child: GestureDetector(
         onDoubleTap: isSelectedState ? null : () => startEditing(),
         child: Card(
@@ -84,20 +79,20 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                 focusNode: _focusNode,
                 ignorePointers: !isEditing,
                 decoration: const InputDecoration.collapsed(hintText: ""),
-                onTapOutside: (event) => endEditing(),
+                onTapOutside: (_) => endEditing(),
                 onEditingComplete: () => endEditing(),
               ),
             ),
-            trailing: Visibility(
-              visible: !isSelectedState,
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              child: MyPopupMenu(
-                todo: widget.todo,
-                startEdit: startEditing,
-              ),
-            ),
+            // trailing: Visibility(
+            //   visible: !isSelectedState,
+            //   maintainSize: true,
+            //   maintainAnimation: true,
+            //   maintainState: true,
+            //   child: MyPopupMenu(
+            //     todo: widget.todo,
+            //     startEdit: startEditing,
+            //   ),
+            // ),
           ),
         ),
       ),
@@ -130,6 +125,12 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     if (!isEditing) return;
 
     String trimmedText = _controller.text.trim();
+
+    if (trimmedText.isEmpty) {
+      deleteTodo();
+      return;
+    }
+
     _controller.text = trimmedText;
 
     _focusNode.unfocus();
@@ -150,5 +151,12 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     ref
         .read(selectionControllerProvider.notifier)
         .toggleSelection(widget.todo.id);
+  }
+
+  void deleteTodo() {
+    ref.read(todosControllerProvider.notifier).deleteTodo(widget.todo);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Todo Removed !')));
   }
 }
