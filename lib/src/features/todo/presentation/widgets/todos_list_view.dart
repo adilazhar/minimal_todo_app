@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
 
@@ -46,10 +47,25 @@ class TodosListView extends ConsumerWidget {
               buildDefaultDragHandles: false,
               padding: const EdgeInsets.all(10),
               proxyDecorator: proxyDecor,
-              itemBuilder: (context, index) => TodoItem(
+              itemBuilder: (context, index) => Animate(
                 key: ValueKey(data[index].id),
-                todo: data[index],
-                ind: index,
+                effects: [
+                  FadeEffect(
+                    duration: 500.ms,
+                    delay: (index * 100).ms,
+                  ),
+                  MoveEffect(
+                    duration: 500.ms,
+                    delay: (index * 100).ms,
+                    begin: const Offset(0, 50),
+                    curve: Curves.easeInOut,
+                  ),
+                ],
+                child: TodoItem(
+                  key: ValueKey(data[index].id),
+                  todo: data[index],
+                  ind: index,
+                ),
               ),
               onReorder: (oldIndex, newIndex) {
                 if (oldIndex != newIndex - 1) {
