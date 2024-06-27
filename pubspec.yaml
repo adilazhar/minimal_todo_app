@@ -67,6 +67,8 @@ dev_dependencies:
   riverpod_lint: ^2.3.10
   custom_lint: ^0.6.4
   mockito: ^5.4.4
+  flutter_launcher_icons: ^0.13.1
+  rename_app: ^1.6.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -74,6 +76,13 @@ dev_dependencies:
 flutter_native_splash:
   color: "#e6e6e6"
   image: "assets/check.png"
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/play_store_512.png"
+  adaptive_icon_background: "#e6e6e6"
+  adaptive_icon_foreground: "assets/ic_launcher_foreground.png"
 
 # The following section is specific to Flutter packages.
 flutter:
