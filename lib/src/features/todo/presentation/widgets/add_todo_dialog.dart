@@ -68,17 +68,6 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
             .fadeIn(delay: 450.ms, duration: 150.ms)
             .slideY(begin: 0.5, duration: 150.ms),
       ],
-    ).animate(controller: _animationController).addEffects(
-      [
-        FadeEffect(
-          duration: 500.ms,
-        ),
-        MoveEffect(
-          duration: 500.ms,
-          begin: const Offset(0, 50),
-          curve: Curves.easeInOut,
-        ),
-      ],
     );
   }
 

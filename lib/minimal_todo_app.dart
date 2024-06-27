@@ -50,7 +50,7 @@ class _MinimalTodoAppState extends ConsumerState<MinimalTodoApp> {
                     resetBackTimeout,
                   );
                   print('Press Back Again To Exit');
-
+                  // Todo : Show Toast Instead of this print statement
                   // Fluttertoast.showToast(
                   //   msg: 'Press Back Again To Exit',
                   //   toastLength: Toast.LENGTH_SHORT,

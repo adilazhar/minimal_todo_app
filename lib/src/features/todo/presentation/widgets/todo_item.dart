@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
@@ -37,6 +38,31 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     return Dismissible(
       key: widget.key!,
       onDismissed: (_) => deleteTodo(),
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Delete Todo ?')
+                .animate()
+                .fadeIn(delay: 100.ms, duration: 150.ms)
+                .slideY(begin: 0.5, duration: 150.ms),
+            actions: [
+              OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text("Cancel"))
+                  .animate()
+                  .fadeIn(delay: 200.ms, duration: 150.ms)
+                  .slideY(begin: 0.5, duration: 150.ms),
+              ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text("Delete"))
+                  .animate()
+                  .fadeIn(delay: 200.ms, duration: 150.ms)
+                  .slideY(begin: 0.5, duration: 150.ms),
+            ],
+          ),
+        );
+      },
       child: GestureDetector(
         onDoubleTap: isSelectedState ? null : () => startEditing(),
         child: Card(
@@ -81,16 +107,6 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                 onEditingComplete: () => endEditing(),
               ),
             ),
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
           ),
         ),
       ),

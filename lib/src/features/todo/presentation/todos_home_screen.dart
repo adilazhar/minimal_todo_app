@@ -11,7 +11,7 @@ class TodosHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.onTertiary,
+      backgroundColor: Theme.of(context).colorScheme.onInverseSurface,
       appBar: const AnimatedAppBar(),
       body: const TodosListView(),
     );
