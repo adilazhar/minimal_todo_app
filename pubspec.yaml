@@ -41,19 +41,19 @@ dependencies:
   riverpod_annotation: ^2.3.5
   equatable: ^2.0.5
   sqflite: ^2.3.3+1
-  sqflite_common_ffi: ^2.3.3
   path: ^1.9.0
   shared_preferences: ^2.2.3
   google_fonts: ^6.2.1
   flex_color_scheme: ^7.3.1
   flutter_native_splash: ^2.4.0
   flutter_animate: ^4.5.0
-  # fluttertoast: ^8.2.6
+  fluttertoast: ^8.2.6
   
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4
+  sqflite_common_ffi: ^2.3.3
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

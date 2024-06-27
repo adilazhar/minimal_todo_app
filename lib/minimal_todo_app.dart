@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/utils/setting/data/theme_data.dart';
 import 'package:minimal_todo_app/src/utils/setting/presentation/controller/app_setting_controller.dart';
@@ -49,15 +49,13 @@ class _MinimalTodoAppState extends ConsumerState<MinimalTodoApp> {
                     ),
                     resetBackTimeout,
                   );
-                  print('Press Back Again To Exit');
-                  // Todo : Show Toast Instead of this print statement
-                  // Fluttertoast.showToast(
-                  //   msg: 'Press Back Again To Exit',
-                  //   toastLength: Toast.LENGTH_SHORT,
-                  //   gravity: ToastGravity.BOTTOM,
-                  //   backgroundColor: Theme.of(context).colorScheme.surface,
-                  //   textColor: Theme.of(context).colorScheme.onSurface,
-                  // );
+                  Fluttertoast.showToast(
+                    msg: 'Press Back Again To Exit',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                    textColor: Theme.of(context).colorScheme.surface,
+                  );
                 }
               }
             },
