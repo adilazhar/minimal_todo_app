@@ -1,6 +1,7 @@
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/utils/setting/data/theme_data.dart';
 import 'package:minimal_todo_app/src/utils/setting/presentation/controller/app_setting_controller.dart';
 
@@ -14,6 +15,9 @@ class MinimalTodoApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appSettingController = ref.watch(appSettingControllerProvider);
+    final isSelectedState = ref.watch(((selectionControllerProvider.select(
+      (value) => value.isSelectedState,
+    ))));
     return appSettingController.when(
       data: (data) => MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -21,8 +25,13 @@ class MinimalTodoApp extends ConsumerWidget {
         theme: flexTodoLightTheme,
         darkTheme: flexTodoDarkTheme,
         themeMode: data.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        home: const DoubleBack(
-          child: TodosHomeScreen(),
+        home: DoubleBack(
+          onFirstBackPress: isSelectedState
+              ? (BuildContext context) {
+                  ref.read(selectionControllerProvider.notifier).resetState();
+                }
+              : null,
+          child: const TodosHomeScreen(),
         ),
       ),
       error: (error, stackTrace) => const SizedBox(),
