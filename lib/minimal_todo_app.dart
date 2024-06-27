@@ -1,4 +1,5 @@
-import 'package:double_back_to_close/double_back_to_close.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
@@ -7,13 +8,20 @@ import 'package:minimal_todo_app/src/utils/setting/presentation/controller/app_s
 
 import 'src/features/todo/presentation/todos_home_screen.dart';
 
-class MinimalTodoApp extends ConsumerWidget {
+class MinimalTodoApp extends ConsumerStatefulWidget {
   const MinimalTodoApp({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MinimalTodoApp> createState() => _MinimalTodoAppState();
+}
+
+class _MinimalTodoAppState extends ConsumerState<MinimalTodoApp> {
+  bool tapped = false;
+
+  @override
+  Widget build(BuildContext context) {
     final appSettingController = ref.watch(appSettingControllerProvider);
     final isSelectedState = ref.watch(((selectionControllerProvider.select(
       (value) => value.isSelectedState,
@@ -25,17 +33,42 @@ class MinimalTodoApp extends ConsumerWidget {
         theme: flexTodoLightTheme,
         darkTheme: flexTodoDarkTheme,
         themeMode: data.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        home: DoubleBack(
-          onFirstBackPress: isSelectedState
-              ? (BuildContext context) {
-                  ref.read(selectionControllerProvider.notifier).resetState();
+        home: PopScope(
+            canPop: false,
+            onPopInvoked: (_) {
+              if (isSelectedState) {
+                ref.read(selectionControllerProvider.notifier).resetState();
+              } else {
+                if (tapped) {
+                  Navigator.pop(context);
+                } else {
+                  tapped = true;
+                  Timer(
+                    const Duration(
+                      seconds: 2,
+                    ),
+                    resetBackTimeout,
+                  );
+                  print('Press Back Again To Exit');
+
+                  // Fluttertoast.showToast(
+                  //   msg: 'Press Back Again To Exit',
+                  //   toastLength: Toast.LENGTH_SHORT,
+                  //   gravity: ToastGravity.BOTTOM,
+                  //   backgroundColor: Theme.of(context).colorScheme.surface,
+                  //   textColor: Theme.of(context).colorScheme.onSurface,
+                  // );
                 }
-              : null,
-          child: const TodosHomeScreen(),
-        ),
+              }
+            },
+            child: const TodosHomeScreen()),
       ),
       error: (error, stackTrace) => const SizedBox(),
       loading: () => const CircularProgressIndicator(),
     );
+  }
+
+  void resetBackTimeout() {
+    tapped = false;
   }
 }
