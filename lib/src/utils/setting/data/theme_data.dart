@@ -75,7 +75,7 @@ final ThemeData flexTodoLightTheme = FlexThemeData.light(
   tones: FlexTones.soft(Brightness.light),
   visualDensity: FlexColorScheme.comfortablePlatformDensity,
   useMaterial3: true,
-  fontFamily: GoogleFonts.dmMono().fontFamily,
+  fontFamily: 'dmMono',
 );
 
 final ThemeData flexTodoDarkTheme = FlexThemeData.dark(
@@ -150,5 +150,5 @@ final ThemeData flexTodoDarkTheme = FlexThemeData.dark(
   tones: FlexTones.soft(Brightness.dark),
   visualDensity: FlexColorScheme.comfortablePlatformDensity,
   useMaterial3: true,
-  fontFamily: GoogleFonts.dmMono().fontFamily,
+  fontFamily: 'dmMono',
 );

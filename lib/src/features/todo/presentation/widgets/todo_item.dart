@@ -5,8 +5,6 @@ import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
 
-import 'my_popup_menu.dart';
-
 class TodoItem extends ConsumerStatefulWidget {
   const TodoItem({
     super.key,
@@ -83,16 +81,16 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                 onEditingComplete: () => endEditing(),
               ),
             ),
-            // trailing: Visibility(
-            //   visible: !isSelectedState,
-            //   maintainSize: true,
-            //   maintainAnimation: true,
-            //   maintainState: true,
-            //   child: MyPopupMenu(
-            //     todo: widget.todo,
-            //     startEdit: startEditing,
-            //   ),
-            // ),
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           ),
         ),
       ),
