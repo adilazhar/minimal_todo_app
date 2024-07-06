@@ -33,33 +33,37 @@ class _MinimalTodoAppState extends ConsumerState<MinimalTodoApp> {
         theme: flexTodoLightTheme,
         darkTheme: flexTodoDarkTheme,
         themeMode: data.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-        home: PopScope(
-            canPop: false,
-            onPopInvoked: (_) {
-              if (isSelectedState) {
-                ref.read(selectionControllerProvider.notifier).resetState();
+        // ignore: deprecated_member_use
+        home: WillPopScope(
+          onWillPop: () async {
+            if (isSelectedState) {
+              ref.read(selectionControllerProvider.notifier).resetState();
+              return false;
+            } else {
+              if (tapped) {
+                debugPrint('here');
+                return true;
               } else {
-                if (tapped) {
-                  Navigator.pop(context);
-                } else {
-                  tapped = true;
-                  Timer(
-                    const Duration(
-                      seconds: 2,
-                    ),
-                    resetBackTimeout,
-                  );
-                  Fluttertoast.showToast(
-                    msg: 'Press Back Again To Exit',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    backgroundColor: Theme.of(context).colorScheme.onSurface,
-                    textColor: Theme.of(context).colorScheme.surface,
-                  );
-                }
+                tapped = true;
+                Timer(
+                  const Duration(
+                    seconds: 2,
+                  ),
+                  resetBackTimeout,
+                );
+                Fluttertoast.showToast(
+                  msg: 'Press Back Again To Exit',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Theme.of(context).colorScheme.onSurface,
+                  textColor: Theme.of(context).colorScheme.surface,
+                );
+                return false;
               }
-            },
-            child: const TodosHomeScreen()),
+            }
+          },
+          child: const TodosHomeScreen(),
+        ),
       ),
       error: (error, stackTrace) => const SizedBox(),
       loading: () => const CircularProgressIndicator(),
