@@ -1,29 +1,33 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
+import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
-const uuid = Uuid();
+var uuid = const Uuid();
 
 class Todo extends Equatable {
   final String id;
   final String text;
   final int todoIndex;
+  final DateTime? dueDateTime;
+
   const Todo({
     required this.id,
     required this.text,
     required this.todoIndex,
+    this.dueDateTime,
   });
 
   Todo copyWith({
     String? id,
     String? text,
     int? todoIndex,
+    DateTime? dueDateTime,
   }) {
     return Todo(
       id: id ?? this.id,
       text: text ?? this.text,
       todoIndex: todoIndex ?? this.todoIndex,
+      dueDateTime: dueDateTime ?? this.dueDateTime,
     );
   }
 
@@ -32,6 +36,7 @@ class Todo extends Equatable {
       'id': id,
       'text': text,
       'todoIndex': todoIndex,
+      'dueDateTime': dueDateTime?.toIso8601String(),
     };
   }
 
@@ -40,11 +45,15 @@ class Todo extends Equatable {
       id: map['id'] ?? '',
       text: map['text'] ?? '',
       todoIndex: map['todoIndex']?.toInt() ?? 0,
+      dueDateTime: map['dueDateTime'] != null
+          ? DateTime.parse(map['dueDateTime'])
+          : null,
     );
   }
 
-  factory Todo.fromText(String text, int index) {
-    return Todo(id: uuid.v4(), text: text, todoIndex: index);
+  factory Todo.fromText(String text, int index, {DateTime? dueDateTime}) {
+    return Todo(
+        id: uuid.v4(), text: text, todoIndex: index, dueDateTime: dueDateTime);
   }
 
   String toJson() => json.encode(toMap());
@@ -52,8 +61,9 @@ class Todo extends Equatable {
   factory Todo.fromJson(String source) => Todo.fromMap(json.decode(source));
 
   @override
-  String toString() => 'Todo(id: $id, text: $text, todoIndex: $todoIndex)';
+  String toString() =>
+      'Todo(id: $id, text: $text, todoIndex: $todoIndex, dueDateTime: $dueDateTime)';
 
   @override
-  List<Object> get props => [id, text, todoIndex];
+  List<Object?> get props => [id, text, todoIndex, dueDateTime];
 }

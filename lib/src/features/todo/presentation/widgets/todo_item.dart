@@ -102,6 +102,7 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                 readOnly: !isEditing,
                 focusNode: _focusNode,
                 ignorePointers: !isEditing,
+                style: Theme.of(context).textTheme.titleMedium,
                 decoration: const InputDecoration.collapsed(hintText: ""),
                 onTapOutside: (_) => endEditing(),
                 onEditingComplete: () => endEditing(),
