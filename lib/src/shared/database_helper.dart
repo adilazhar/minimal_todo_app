@@ -12,23 +12,17 @@ DatabaseHelper dbHelper(DbHelperRef ref) {
 
 class DatabaseHelper {
   static const _databaseName = "MinimalTodoDatabase.db";
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
 
-  // *This Is For The Todo Table*
   static const todoTable = 'todos';
 
   static const columnTodoId = 'id';
   static const columnTodoText = 'text';
   static const columnTodoIndex = 'todoIndex';
+  static const columnDueDateTime = 'dueDateTime';
 
-  // Make this a singleton class.
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-
-  @visibleForTesting
-  void testSetDatabase(Database db) {
-    _database = db;
-  }
 
   static Database? _database;
   Future<Database> get database async {
@@ -37,10 +31,15 @@ class DatabaseHelper {
     return _database!;
   }
 
+  @visibleForTesting
+  void testSetDatabase(Database db) {
+    _database = db;
+  }
+
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -48,8 +47,17 @@ class DatabaseHelper {
           CREATE TABLE $todoTable (
           $columnTodoId TEXT PRIMARY KEY,
           $columnTodoText TEXT NOT NULL,
-          $columnTodoIndex INTEGER NOT NULL
+          $columnTodoIndex INTEGER NOT NULL,
+          $columnDueDateTime TEXT 
           )
           ''');
+  }
+
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        ALTER TABLE $todoTable ADD COLUMN $columnDueDateTime TEXT
+      ''');
+    }
   }
 }
