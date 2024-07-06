@@ -23,7 +23,8 @@ void main() {
             CREATE TABLE ${DatabaseHelper.todoTable} (
               ${DatabaseHelper.columnTodoId} TEXT PRIMARY KEY,
               ${DatabaseHelper.columnTodoText} TEXT NOT NULL,
-              ${DatabaseHelper.columnTodoIndex} INTEGER NOT NULL
+              ${DatabaseHelper.columnTodoIndex} INTEGER NOT NULL,
+              ${DatabaseHelper.columnDueDateTime} TEXT
             )
           ''');
         },
@@ -44,12 +45,14 @@ void main() {
           id: '$i',
           text: 'Todo $i',
           todoIndex: i - 1,
+          dueDateTime: DateTime(2025, 5, 8).add(Duration(days: i - 1)),
         ));
       }
     }
 
     test('Insert Todo', () async {
-      final todo = Todo.fromText('Test Todo 1', 0);
+      final todo =
+          Todo.fromText('Test Todo 1', 0, dueDateTime: DateTime(2025, 5, 8));
       await todosRepository.insertTodo(todo);
 
       final todos = await todosRepository.getTodos();
@@ -57,15 +60,17 @@ void main() {
       expect(todos.length, 1);
       expect(todos.first.text, 'Test Todo 1');
       expect(todos.first.todoIndex, 0);
+      expect(todos.first.dueDateTime, DateTime(2025, 5, 8));
     });
 
     test('Update Todo', () async {
-      final todo = Todo.fromText('Test Todo', 0);
+      final todo =
+          Todo.fromText('Test Todo', 0, dueDateTime: DateTime(2025, 5, 8));
       await todosRepository.insertTodo(todo);
 
       final todosBeforeUpdate = await todosRepository.getTodos();
-      final updatedTodo =
-          todosBeforeUpdate.first.copyWith(text: 'Updated Todo');
+      final updatedTodo = todosBeforeUpdate.first
+          .copyWith(text: 'Updated Todo', dueDateTime: DateTime(2025, 5, 9));
       await todosRepository.updateTodo(updatedTodo);
 
       final todosAfterUpdate = await todosRepository.getTodos();
@@ -73,6 +78,7 @@ void main() {
       expect(todosAfterUpdate.length, 1);
       expect(todosAfterUpdate.first.text, 'Updated Todo');
       expect(todosAfterUpdate.first.todoIndex, 0);
+      expect(todosAfterUpdate.first.dueDateTime, DateTime(2025, 5, 9));
     });
 
     test('Get Row Count', () async {
@@ -214,6 +220,7 @@ void main() {
       for (int i = 0; i < todos.length; i++) {
         expect(todos[i].id, '${i + 4}');
         expect(todos[i].todoIndex, i);
+        expect(todos[i].dueDateTime, DateTime(2025, 5, 11 + i));
       }
     });
 
@@ -246,12 +253,16 @@ void main() {
       expect(todos.length, 4);
       expect(todos[0].id, '1');
       expect(todos[0].todoIndex, 0);
+      expect(todos[0].dueDateTime, DateTime(2025, 5, 8));
       expect(todos[1].id, '2');
       expect(todos[1].todoIndex, 1);
+      expect(todos[1].dueDateTime, DateTime(2025, 5, 9));
       expect(todos[2].id, '3');
       expect(todos[2].todoIndex, 2);
+      expect(todos[2].dueDateTime, DateTime(2025, 5, 10));
       expect(todos[3].id, '7');
       expect(todos[3].todoIndex, 3);
+      expect(todos[3].dueDateTime, DateTime(2025, 5, 14));
     });
 
     test('Delete 2nd, 4th, and 6th Todos', () async {
@@ -283,12 +294,16 @@ void main() {
       expect(todos.length, 4);
       expect(todos[0].id, '1');
       expect(todos[0].todoIndex, 0);
+      expect(todos[0].dueDateTime, DateTime(2025, 5, 8));
       expect(todos[1].id, '3');
       expect(todos[1].todoIndex, 1);
+      expect(todos[1].dueDateTime, DateTime(2025, 5, 10));
       expect(todos[2].id, '5');
       expect(todos[2].todoIndex, 2);
+      expect(todos[2].dueDateTime, DateTime(2025, 5, 12));
       expect(todos[3].id, '7');
       expect(todos[3].todoIndex, 3);
+      expect(todos[3].dueDateTime, DateTime(2025, 5, 14));
     });
 
     test('Reorder Note from lower to higher index', () async {

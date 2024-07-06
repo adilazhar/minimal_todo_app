@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:uuid/uuid.dart';
 
-var uuid = const Uuid();
+const uuid = Uuid();
 
 class Todo extends Equatable {
   final String id;
@@ -29,6 +30,19 @@ class Todo extends Equatable {
       todoIndex: todoIndex ?? this.todoIndex,
       dueDateTime: dueDateTime ?? this.dueDateTime,
     );
+  }
+
+  // write method to get a formatted time and only time
+  String get formattedTime {
+    if (dueDateTime == null) return '';
+    final formatter = DateFormat('h:mm a');
+    return formatter.format(dueDateTime!);
+  }
+
+  String get formattedDueDate {
+    if (dueDateTime == null) return '';
+    final formatter = DateFormat('E, MMM d, y');
+    return formatter.format(dueDateTime!);
   }
 
   Map<String, dynamic> toMap() {

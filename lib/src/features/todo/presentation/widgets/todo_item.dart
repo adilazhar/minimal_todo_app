@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
@@ -69,6 +70,8 @@ class _TodoItemState extends ConsumerState<TodoItem> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: widget.elevation,
           child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+            horizontalTitleGap: 10,
             selected: isSelected,
             focusColor: Theme.of(context).colorScheme.surface,
             selectedTileColor: Theme.of(context).primaryColor.withAlpha(100),
@@ -77,7 +80,8 @@ class _TodoItemState extends ConsumerState<TodoItem> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             leading: SizedBox(
-              width: 20,
+              width: 30,
+              height: double.infinity,
               child: isSelectedState
                   ? IgnorePointer(
                       child: Checkbox(
@@ -108,6 +112,62 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                 onEditingComplete: () => endEditing(),
               ),
             ),
+            subtitle: widget.todo.dueDateTime != null
+                ? Row(
+                    children: [
+                      if (widget.todo.dueDateTime!.hour != 0 ||
+                          widget.todo.dueDateTime!.minute != 0)
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: 16,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const Gap(8),
+                              Text(
+                                widget.todo.formattedTime,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (widget.todo.dueDateTime!.hour != 0 ||
+                          widget.todo.dueDateTime!.minute != 0)
+                        const Gap(8),
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.calendar_today_rounded,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const Gap(8),
+                            Text(
+                              widget.todo.formattedDueDate,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                : null,
           ),
         ),
       ),
