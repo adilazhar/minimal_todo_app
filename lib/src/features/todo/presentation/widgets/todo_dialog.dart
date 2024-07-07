@@ -7,16 +7,21 @@ import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
 import 'package:intl/intl.dart';
 
-class AddTodoDialog extends ConsumerStatefulWidget {
-  const AddTodoDialog({
+class TodoDialog extends ConsumerStatefulWidget {
+  const TodoDialog({
+    required this.isEditing,
+    this.todo,
     super.key,
   });
 
+  final bool isEditing;
+  final Todo? todo;
+
   @override
-  ConsumerState<AddTodoDialog> createState() => _AddTodoDialogState();
+  ConsumerState<TodoDialog> createState() => _AddTodoDialogState();
 }
 
-class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
+class _AddTodoDialogState extends ConsumerState<TodoDialog>
     with SingleTickerProviderStateMixin {
   final _controller = TextEditingController();
   final _textFieldFocusNode = FocusNode();
@@ -32,6 +37,15 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+    if (widget.isEditing) {
+      _controller.text = widget.todo!.text;
+      if (widget.todo?.dueDateTime != null) {
+        selectedDate = widget.todo!.dueDateTime!;
+        if (widget.todo!.isTimeSetByUser) {
+          selectedTime = TimeOfDay.fromDateTime(widget.todo!.dueDateTime!);
+        }
+      }
+    }
   }
 
   @override
@@ -45,7 +59,7 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Todo :')
+      title: Text(widget.isEditing ? 'Update Todo :' : 'Add Todo :')
           .animate(controller: _animationController)
           .fadeIn(delay: 100.ms, duration: 150.ms)
           .slideY(begin: 0.5, duration: 150.ms),
@@ -63,6 +77,7 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
               focusNode: _textFieldFocusNode,
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.newline,
+              decoration: const InputDecoration(labelText: 'Task'),
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
             ),
             const Gap(16),
@@ -173,14 +188,23 @@ class _AddTodoDialogState extends ConsumerState<AddTodoDialog>
     if (_controller.text.trim().isEmpty) return;
 
     final dateTime = getMergedDateTime();
-    int index = ref.watch(totalRowsProvider);
-    ref.read(todosControllerProvider.notifier).insertTodo(
-        Todo.fromText(_controller.text.trim(), index, dueDateTime: dateTime));
+
+    widget.isEditing
+        ? ref.read(todosControllerProvider.notifier).updateTodo(widget.todo!
+            .copyWith(
+                text: _controller.text.trim(),
+                dueDateTime: dateTime,
+                isTimeSetByUser: selectedTime != null))
+        : {
+            ref.read(todosControllerProvider.notifier).insertTodo(Todo.fromText(
+                _controller.text.trim(), ref.watch(totalRowsProvider),
+                dueDateTime: dateTime, isTimeSetByUser: selectedTime != null))
+          };
 
     if (mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Todo Added !')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(widget.isEditing ? 'Todo Upadted' : 'Todo Added !')));
     }
   }
 }

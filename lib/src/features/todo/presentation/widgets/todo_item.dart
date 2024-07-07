@@ -6,8 +6,9 @@ import 'package:gap/gap.dart';
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
+import 'package:minimal_todo_app/src/features/todo/presentation/widgets/todo_dialog.dart';
 
-class TodoItem extends ConsumerStatefulWidget {
+class TodoItem extends ConsumerWidget {
   const TodoItem({
     super.key,
     required this.todo,
@@ -20,25 +21,16 @@ class TodoItem extends ConsumerStatefulWidget {
   final double? elevation;
 
   @override
-  ConsumerState<TodoItem> createState() => _TodoItemState();
-}
-
-class _TodoItemState extends ConsumerState<TodoItem> {
-  final _controller = TextEditingController();
-  bool isEditing = false;
-  final FocusNode _focusNode = FocusNode();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isSelectedState = ref.watch(selectionControllerProvider.select(
       (value) => value.isSelectedState,
     ));
     final isSelected = ref.watch(selectionControllerProvider.select(
-      (value) => value.selectedTodos.contains(widget.todo.id),
+      (value) => value.selectedTodos.contains(todo.id),
     ));
     return Dismissible(
-      key: widget.key!,
-      onDismissed: (_) => deleteTodo(),
+      key: key!,
+      onDismissed: (_) => deleteTodo(ref, context),
       confirmDismiss: (direction) async {
         return await showDialog(
           context: context,
@@ -65,18 +57,26 @@ class _TodoItemState extends ConsumerState<TodoItem> {
         );
       },
       child: GestureDetector(
-        onDoubleTap: isSelectedState ? null : () => startEditing(),
+        onDoubleTap: isSelectedState
+            ? null
+            : () => showDialog(
+                  context: context,
+                  builder: (context) => TodoDialog(
+                    isEditing: true,
+                    todo: todo,
+                  ),
+                ),
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: widget.elevation,
+          elevation: elevation,
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             horizontalTitleGap: 10,
             selected: isSelected,
             focusColor: Theme.of(context).colorScheme.surface,
             selectedTileColor: Theme.of(context).primaryColor.withAlpha(100),
-            onLongPress: () => toggleSelectionState(),
-            onTap: () => isSelectedState ? toggleSelection() : null,
+            onLongPress: () => toggleSelectionState(ref),
+            onTap: () => isSelectedState ? toggleSelection(ref) : null,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             leading: SizedBox(
@@ -90,33 +90,18 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                       ),
                     )
                   : ReorderableDragStartListener(
-                      index: widget.ind,
+                      index: ind,
                       child: const Icon(Icons.drag_handle_rounded),
                     ),
             ),
-            title: Theme(
-              data: Theme.of(context).copyWith(
-                inputDecorationTheme: const InputDecorationTheme(
-                  border: InputBorder.none,
-                ),
-              ),
-              child: TextField(
-                controller: _controller,
-                maxLines: null,
-                readOnly: !isEditing,
-                focusNode: _focusNode,
-                ignorePointers: !isEditing,
-                style: Theme.of(context).textTheme.titleMedium,
-                decoration: const InputDecoration.collapsed(hintText: ""),
-                onTapOutside: (_) => endEditing(),
-                onEditingComplete: () => endEditing(),
-              ),
+            title: Text(
+              todo.text,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
-            subtitle: widget.todo.dueDateTime != null
+            subtitle: todo.dueDateTime != null
                 ? Row(
                     children: [
-                      if (widget.todo.dueDateTime!.hour != 0 ||
-                          widget.todo.dueDateTime!.minute != 0)
+                      if (todo.isTimeSetByUser)
                         Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
@@ -134,15 +119,13 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                               ),
                               const Gap(8),
                               Text(
-                                widget.todo.formattedTime,
+                                todo.formattedTime,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
                           ),
                         ),
-                      if (widget.todo.dueDateTime!.hour != 0 ||
-                          widget.todo.dueDateTime!.minute != 0)
-                        const Gap(8),
+                      if (todo.isTimeSetByUser) const Gap(8),
                       Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
@@ -159,7 +142,7 @@ class _TodoItemState extends ConsumerState<TodoItem> {
                             ),
                             const Gap(8),
                             Text(
-                              widget.todo.formattedDueDate,
+                              todo.formattedDueDate,
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -174,62 +157,17 @@ class _TodoItemState extends ConsumerState<TodoItem> {
     );
   }
 
-  @override
-  void initState() {
-    _controller.text = widget.todo.text;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  void startEditing() {
-    _controller.selection =
-        TextSelection.collapsed(offset: _controller.text.length);
-    setState(() {
-      isEditing = true;
-    });
-    _focusNode.requestFocus();
-  }
-
-  void endEditing() {
-    if (!isEditing) return;
-
-    String trimmedText = _controller.text.trim();
-
-    if (trimmedText.isEmpty) {
-      deleteTodo();
-      return;
-    }
-
-    _controller.text = trimmedText;
-
-    _focusNode.unfocus();
-    ref
-        .read(todosControllerProvider.notifier)
-        .updateTodo(widget.todo.copyWith(text: _controller.text));
-    setState(() {
-      isEditing = false;
-    });
-  }
-
-  void toggleSelectionState() {
+  void toggleSelectionState(WidgetRef ref) {
     ref.read(selectionControllerProvider.notifier).toggleState();
-    toggleSelection();
+    toggleSelection(ref);
   }
 
-  void toggleSelection() {
-    ref
-        .read(selectionControllerProvider.notifier)
-        .toggleSelection(widget.todo.id);
+  void toggleSelection(WidgetRef ref) {
+    ref.read(selectionControllerProvider.notifier).toggleSelection(todo.id);
   }
 
-  void deleteTodo() {
-    ref.read(todosControllerProvider.notifier).deleteTodo(widget.todo);
+  void deleteTodo(WidgetRef ref, BuildContext context) {
+    ref.read(todosControllerProvider.notifier).deleteTodo(todo);
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text('Todo Removed !')));

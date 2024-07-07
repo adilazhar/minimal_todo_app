@@ -12,7 +12,7 @@ DatabaseHelper dbHelper(DbHelperRef ref) {
 
 class DatabaseHelper {
   static const _databaseName = "MinimalTodoDatabase.db";
-  static const _databaseVersion = 2;
+  static const _databaseVersion = 2; // No change needed, still version 2
 
   static const todoTable = 'todos';
 
@@ -20,6 +20,7 @@ class DatabaseHelper {
   static const columnTodoText = 'text';
   static const columnTodoIndex = 'todoIndex';
   static const columnDueDateTime = 'dueDateTime';
+  static const columnIsTimeSetByUser = 'isTimeSetByUser';
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
@@ -48,7 +49,8 @@ class DatabaseHelper {
           $columnTodoId TEXT PRIMARY KEY,
           $columnTodoText TEXT NOT NULL,
           $columnTodoIndex INTEGER NOT NULL,
-          $columnDueDateTime TEXT 
+          $columnDueDateTime TEXT,
+          $columnIsTimeSetByUser INTEGER
           )
           ''');
   }
@@ -56,7 +58,10 @@ class DatabaseHelper {
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('''
-        ALTER TABLE $todoTable ADD COLUMN $columnDueDateTime TEXT
+      ALTER TABLE $todoTable ADD COLUMN $columnDueDateTime TEXT
+      ''');
+      await db.execute('''
+      ALTER TABLE $todoTable ADD COLUMN $columnIsTimeSetByUser INTEGER
       ''');
     }
   }

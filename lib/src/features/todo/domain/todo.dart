@@ -10,12 +10,14 @@ class Todo extends Equatable {
   final String text;
   final int todoIndex;
   final DateTime? dueDateTime;
+  final bool isTimeSetByUser;
 
   const Todo({
     required this.id,
     required this.text,
     required this.todoIndex,
     this.dueDateTime,
+    this.isTimeSetByUser = false,
   });
 
   Todo copyWith({
@@ -23,16 +25,17 @@ class Todo extends Equatable {
     String? text,
     int? todoIndex,
     DateTime? dueDateTime,
+    bool? isTimeSetByUser,
   }) {
     return Todo(
       id: id ?? this.id,
       text: text ?? this.text,
       todoIndex: todoIndex ?? this.todoIndex,
       dueDateTime: dueDateTime ?? this.dueDateTime,
+      isTimeSetByUser: isTimeSetByUser ?? this.isTimeSetByUser,
     );
   }
 
-  // write method to get a formatted time and only time
   String get formattedTime {
     if (dueDateTime == null) return '';
     final formatter = DateFormat('h:mm a');
@@ -51,6 +54,7 @@ class Todo extends Equatable {
       'text': text,
       'todoIndex': todoIndex,
       'dueDateTime': dueDateTime?.toIso8601String(),
+      'isTimeSetByUser': isTimeSetByUser ? 1 : 0,
     };
   }
 
@@ -62,12 +66,18 @@ class Todo extends Equatable {
       dueDateTime: map['dueDateTime'] != null
           ? DateTime.parse(map['dueDateTime'])
           : null,
+      isTimeSetByUser: map['isTimeSetByUser'] == 1,
     );
   }
 
-  factory Todo.fromText(String text, int index, {DateTime? dueDateTime}) {
+  factory Todo.fromText(String text, int index,
+      {DateTime? dueDateTime, bool? isTimeSetByUser}) {
     return Todo(
-        id: uuid.v4(), text: text, todoIndex: index, dueDateTime: dueDateTime);
+        id: uuid.v4(),
+        text: text,
+        todoIndex: index,
+        dueDateTime: dueDateTime,
+        isTimeSetByUser: isTimeSetByUser ?? false);
   }
 
   String toJson() => json.encode(toMap());
@@ -76,8 +86,9 @@ class Todo extends Equatable {
 
   @override
   String toString() =>
-      'Todo(id: $id, text: $text, todoIndex: $todoIndex, dueDateTime: $dueDateTime)';
+      'Todo(id: $id, text: $text, todoIndex: $todoIndex, dueDateTime: $dueDateTime, isTimeSetByUser: $isTimeSetByUser)';
 
   @override
-  List<Object?> get props => [id, text, todoIndex, dueDateTime];
+  List<Object?> get props =>
+      [id, text, todoIndex, dueDateTime, isTimeSetByUser];
 }

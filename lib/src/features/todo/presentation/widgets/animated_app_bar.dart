@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:minimal_todo_app/src/features/todo/application/total_rows.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
-import 'package:minimal_todo_app/src/features/todo/presentation/widgets/add_todo_dialog.dart';
+import 'package:minimal_todo_app/src/features/todo/presentation/widgets/todo_dialog.dart';
 import 'package:minimal_todo_app/src/utils/setting/presentation/night_mode_button.dart';
 
 class AnimatedAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -71,7 +71,9 @@ class AnimatedAppBar extends ConsumerWidget implements PreferredSizeWidget {
   void showAddTodoDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => const AddTodoDialog(),
+      builder: (context) => const TodoDialog(
+        isEditing: false,
+      ),
     );
   }
 
