@@ -12,7 +12,7 @@ DatabaseHelper dbHelper(DbHelperRef ref) {
 
 class DatabaseHelper {
   static const _databaseName = "MinimalTodoDatabase.db";
-  static const _databaseVersion = 2; // No change needed, still version 2
+  static const _databaseVersion = 2;
 
   static const todoTable = 'todos';
 

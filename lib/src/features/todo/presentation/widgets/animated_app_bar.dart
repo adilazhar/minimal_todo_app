@@ -4,6 +4,7 @@ import 'package:minimal_todo_app/src/features/todo/application/total_rows.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/widgets/todo_dialog.dart';
 import 'package:minimal_todo_app/src/utils/setting/presentation/night_mode_button.dart';
+import 'package:minimal_todo_app/src/utils/setting/presentation/sorting_order_selector_button.dart';
 
 class AnimatedAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const AnimatedAppBar({
@@ -43,6 +44,10 @@ class AnimatedAppBar extends ConsumerWidget implements PreferredSizeWidget {
               : Text(selectedTodos.toString()),
           actions: selectedTodos == 0
               ? [
+                  const Padding(
+                    padding: EdgeInsets.only(right: 5),
+                    child: SortingOrderSelectorButton(),
+                  ),
                   const NightModeButton(),
                   Padding(
                     padding: const EdgeInsets.only(right: 5),

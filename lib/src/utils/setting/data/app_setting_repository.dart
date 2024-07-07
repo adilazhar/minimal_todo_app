@@ -13,7 +13,13 @@ class AppSettingRepository {
 
   Future<AppSetting> loadSettings() async {
     bool? isDarkMode = _prefs.getBool(AppSettingHelper.isDarkMode);
-    return AppSetting(isDarkMode: isDarkMode);
+    String? sortingOption = _prefs.getString(AppSettingHelper.sortingOption);
+    SortingOption? convertedSortingOption = sortingOption != null
+        ? SortingOption.values
+            .firstWhere((option) => option.toString() == sortingOption)
+        : null;
+    return AppSetting(
+        isDarkMode: isDarkMode, sortingOption: convertedSortingOption);
   }
 
   Future<void> saveData(String key, dynamic value) async {

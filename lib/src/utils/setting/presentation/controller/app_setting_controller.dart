@@ -12,10 +12,6 @@ class AppSettingController extends _$AppSettingController {
   @override
   FutureOr<AppSetting> build() async {
     _appSettingRepo = await ref.watch(appSettingRepositoryProvider.future);
-    return await loadSettings();
-  }
-
-  Future<AppSetting> loadSettings() async {
     return await _appSettingRepo.loadSettings();
   }
 
@@ -24,5 +20,13 @@ class AppSettingController extends _$AppSettingController {
   ) async {
     state = AsyncValue.data(state.value!.copyWith(isDarkMode: value));
     await _appSettingRepo.saveData(AppSettingHelper.isDarkMode, value);
+  }
+
+  Future<void> updateSortingOption(
+    SortingOption value,
+  ) async {
+    state = AsyncValue.data(state.value!.copyWith(sortingOption: value));
+    await _appSettingRepo.saveData(
+        AppSettingHelper.sortingOption, value.toString());
   }
 }
