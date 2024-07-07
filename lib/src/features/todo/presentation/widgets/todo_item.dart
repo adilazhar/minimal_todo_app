@@ -7,6 +7,8 @@ import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/selection_controller.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/controller/todos_controller.dart';
 import 'package:minimal_todo_app/src/features/todo/presentation/widgets/todo_dialog.dart';
+import 'package:minimal_todo_app/src/utils/setting/domain/app_setting.dart';
+import 'package:minimal_todo_app/src/utils/setting/presentation/controller/app_setting_controller.dart';
 
 class TodoItem extends ConsumerWidget {
   const TodoItem({
@@ -28,6 +30,10 @@ class TodoItem extends ConsumerWidget {
     final isSelected = ref.watch(selectionControllerProvider.select(
       (value) => value.selectedTodos.contains(todo.id),
     ));
+    final isManualSortingMode = ref.watch(appSettingControllerProvider
+            .select((value) => value.value!.sortingOption)) ==
+        SortingOption.manual;
+
     return Dismissible(
       key: key!,
       onDismissed: (_) => deleteTodo(ref, context),
@@ -89,10 +95,12 @@ class TodoItem extends ConsumerWidget {
                         onChanged: (value) {},
                       ),
                     )
-                  : ReorderableDragStartListener(
-                      index: ind,
-                      child: const Icon(Icons.drag_handle_rounded),
-                    ),
+                  : isManualSortingMode
+                      ? ReorderableDragStartListener(
+                          index: ind,
+                          child: const Icon(Icons.drag_handle_rounded),
+                        )
+                      : const Icon(Icons.check),
             ),
             title: Text(
               todo.text,

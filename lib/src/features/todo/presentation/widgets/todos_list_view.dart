@@ -42,6 +42,7 @@ class TodosListView extends ConsumerWidget {
               child: Text('Try Adding Some Todos !'),
             )
           : ReorderableListView.builder(
+              physics: const ClampingScrollPhysics(),
               itemCount: data.length,
               buildDefaultDragHandles: false,
               padding: const EdgeInsets.all(10),

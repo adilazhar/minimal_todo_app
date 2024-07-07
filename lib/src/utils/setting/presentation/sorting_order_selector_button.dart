@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
-import 'package:minimal_todo_app/src/utils/setting/domain/app_setting.dart';
-import 'package:minimal_todo_app/src/utils/setting/presentation/controller/app_setting_controller.dart';
 
 import 'sorting_order_selector_dialog.dart';
 

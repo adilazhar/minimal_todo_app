@@ -1,5 +1,6 @@
 import 'package:minimal_todo_app/src/features/todo/domain/todo.dart';
 import 'package:minimal_todo_app/src/shared/database_helper.dart';
+import 'package:minimal_todo_app/src/utils/setting/domain/app_setting.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,13 +17,36 @@ class TodosRepository {
 
   TodosRepository(this._databaseHelper);
 
-  Future<List<Todo>> getTodos() async {
+  Future<List<Todo>> getTodos(SortingOption sortOption) async {
     final db = await _databaseHelper.database;
-    final List<Map<String, dynamic>> maps = await db.query(
+    String orderByClause;
+    switch (sortOption) {
+      case SortingOption.manual:
+        orderByClause = '${DatabaseHelper.columnTodoIndex} ASC';
+        break;
+      case SortingOption.alphaAsc:
+        orderByClause = '${DatabaseHelper.columnTodoText} ASC';
+        break;
+      case SortingOption.alphaDesc:
+        orderByClause = '${DatabaseHelper.columnTodoText} DESC';
+        break;
+      case SortingOption.duedateAsc:
+        orderByClause =
+            '(CASE WHEN ${DatabaseHelper.columnDueDateTime} IS NULL THEN 0 ELSE 1 END), ${DatabaseHelper.columnDueDateTime} ASC';
+        break;
+      case SortingOption.duedateDesc:
+        orderByClause =
+            '(CASE WHEN ${DatabaseHelper.columnDueDateTime} IS NULL THEN 0 ELSE 1 END), ${DatabaseHelper.columnDueDateTime} DESC';
+        break;
+      default:
+        orderByClause = '${DatabaseHelper.columnTodoIndex} ASC';
+    }
+
+    final List<Map<String, dynamic>> result = await db.query(
       DatabaseHelper.todoTable,
-      orderBy: '${DatabaseHelper.columnTodoIndex} ASC',
+      orderBy: orderByClause,
     );
-    return maps.map((e) => Todo.fromMap(e)).toList();
+    return result.map((e) => Todo.fromMap(e)).toList();
   }
 
   Future<void> insertTodo(Todo todo) async {
@@ -60,7 +84,6 @@ class TodosRepository {
     final db = await _databaseHelper.database;
 
     await db.transaction((txn) async {
-      // First, delete the selected todos
       for (final todo in todosList) {
         await txn.delete(
           DatabaseHelper.todoTable,
@@ -69,13 +92,12 @@ class TodosRepository {
         );
       }
 
-      // Then, fetch the remaining todos and update their indices
       final List<Map<String, dynamic>> resultSet =
           await txn.query(DatabaseHelper.todoTable);
-      // Create a new modifiable list from the result set
+
       final List<Map<String, dynamic>> remainingTodos =
           List<Map<String, dynamic>>.from(resultSet);
-      // Now you can sort this new list
+
       remainingTodos.sort((a, b) => a[DatabaseHelper.columnTodoIndex]
           .compareTo(b[DatabaseHelper.columnTodoIndex]));
 

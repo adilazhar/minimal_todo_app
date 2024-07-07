@@ -66,7 +66,7 @@ class SortingOrderSelectorDialog extends ConsumerWidget {
             },
           ),
           RadioListTile<SortingOption>(
-            title: const Text('Due Date Ascending'),
+            title: const Text('Due Date Ascending(Earliest First)'),
             value: SortingOption.duedateAsc,
             groupValue: selectedSortingOption,
             onChanged: (value) {
@@ -76,7 +76,7 @@ class SortingOrderSelectorDialog extends ConsumerWidget {
             },
           ),
           RadioListTile<SortingOption>(
-            title: const Text('Due Date Descending'),
+            title: const Text('Due Date Descending(Farthest First)'),
             value: SortingOption.duedateDesc,
             groupValue: selectedSortingOption,
             onChanged: (value) {
