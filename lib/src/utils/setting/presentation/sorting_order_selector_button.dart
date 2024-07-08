@@ -11,6 +11,7 @@ class SortingOrderSelectorButton extends StatelessWidget {
       onPressed: () {
         showModalBottomSheet(
           context: context,
+          barrierColor: Colors.black.withOpacity(0.3),
           builder: (context) {
             return const SortingOrderSelectorDialog();
           },
