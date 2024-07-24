@@ -107,7 +107,10 @@ class _AddTodoDialogState extends ConsumerState<TodoDialog>
                 ),
                 title: selectedDate == null
                     ? const Text('Select Date')
-                    : Text(DateFormat('yyyy-MM-dd').format(selectedDate!)),
+                    : Text(
+                        DateFormat('yyyy-MM-dd').format(selectedDate!),
+                        style: const TextStyle(fontSize: 12),
+                      ),
                 trailing: selectedDate == null
                     ? null
                     : IconButton(
@@ -132,7 +135,10 @@ class _AddTodoDialogState extends ConsumerState<TodoDialog>
               leading: const Icon(Icons.access_time),
               title: selectedTime == null
                   ? const Text('Select Time')
-                  : Text(selectedTime!.format(context)),
+                  : Text(
+                      selectedTime!.format(context),
+                      style: const TextStyle(fontSize: 12),
+                    ),
               trailing: selectedTime == null
                   ? null
                   : IconButton(
