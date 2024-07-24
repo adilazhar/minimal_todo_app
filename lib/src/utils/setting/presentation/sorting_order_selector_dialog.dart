@@ -14,15 +14,16 @@ class SortingOrderSelectorDialog extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: ListView(
         children: [
-          Container(
-            width: 50,
-            height: 5,
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.circular(10),
+          Center(
+            child: Container(
+              width: 50,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           ),
           const Gap(10),

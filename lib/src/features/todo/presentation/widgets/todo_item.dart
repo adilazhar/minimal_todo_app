@@ -76,6 +76,7 @@ class TodoItem extends ConsumerWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           elevation: elevation,
           child: ListTile(
+            enableFeedback: false,
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             horizontalTitleGap: 10,
             selected: isSelected,
@@ -107,56 +108,67 @@ class TodoItem extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             subtitle: todo.dueDateTime != null
-                ? Row(
-                    children: [
-                      if (todo.isTimeSetByUser)
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.access_time_rounded,
-                                size: 16,
-                                color: Theme.of(context).colorScheme.primary,
+                ? SizedBox(
+                    height: 20,
+                    child: FittedBox(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          if (todo.isTimeSetByUser)
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                              const Gap(8),
-                              Text(
-                                todo.formattedTime,
-                                style: Theme.of(context).textTheme.bodySmall,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.access_time_rounded,
+                                    size: 16,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    todo.formattedTime,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
+                          if (todo.isTimeSetByUser) const Gap(8),
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.calendar_today_rounded,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                const Gap(8),
+                                Text(
+                                  todo.formattedDueDate,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      if (todo.isTimeSetByUser) const Gap(8),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.calendar_today_rounded,
-                              size: 16,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const Gap(8),
-                            Text(
-                              todo.formattedDueDate,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   )
                 : null,
           ),
