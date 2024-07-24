@@ -12,7 +12,7 @@ DatabaseHelper dbHelper(DbHelperRef ref) {
 
 class DatabaseHelper {
   static const _databaseName = "MinimalTodoDatabase.db";
-  static const _databaseVersion = 2;
+  static const databaseVersion = 2;
 
   static const todoTable = 'todos';
 
@@ -40,10 +40,10 @@ class DatabaseHelper {
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion, onCreate: _onCreate, onUpgrade: _onUpgrade);
+        version: databaseVersion, onCreate: onCreate, onUpgrade: onUpgrade);
   }
 
-  Future _onCreate(Database db, int version) async {
+  Future onCreate(Database db, int version) async {
     await db.execute('''
           CREATE TABLE $todoTable (
           $columnTodoId TEXT PRIMARY KEY,
@@ -55,7 +55,7 @@ class DatabaseHelper {
           ''');
   }
 
-  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  Future onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
       await db.execute('''
       ALTER TABLE $todoTable ADD COLUMN $columnDueDateTime TEXT

@@ -204,7 +204,7 @@ class _AddTodoDialogState extends ConsumerState<TodoDialog>
     if (mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(widget.isEditing ? 'Todo Upadted' : 'Todo Added !')));
+          content: Text(widget.isEditing ? 'Todo Updated' : 'Todo Added !')));
     }
   }
 }

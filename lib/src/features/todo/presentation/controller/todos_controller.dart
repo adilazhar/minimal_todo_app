@@ -41,122 +41,27 @@ class TodosController extends _$TodosController {
   Future<void> insertTodo(Todo todo) async {
     await _todosRepository!.insertTodo(todo);
     ref.read(totalRowsProvider.notifier).incrementRows();
-    if (_sortingOption == SortingOption.manual) {
-      state = AsyncData([...state.value!, todo]);
-    } else {
-      final List<Todo> newState = [...state.value!];
-      bool inserted = false;
-      for (int i = 0; i < newState.length; i++) {
-        final t = newState[i];
-        bool shouldInsert = false;
-        if (_sortingOption == SortingOption.alphaAsc &&
-            todo.text.compareTo(t.text) < 0) {
-          shouldInsert = true;
-        } else if (_sortingOption == SortingOption.alphaDesc &&
-            todo.text.compareTo(t.text) > 0) {
-          shouldInsert = true;
-        } else if (_sortingOption == SortingOption.duedateAsc &&
-            todo.dueDateTime != null &&
-            t.dueDateTime != null &&
-            todo.dueDateTime!.isBefore(t.dueDateTime!)) {
-          shouldInsert = true;
-        } else if (_sortingOption == SortingOption.duedateDesc &&
-            todo.dueDateTime != null &&
-            t.dueDateTime != null &&
-            todo.dueDateTime!.isAfter(t.dueDateTime!)) {
-          shouldInsert = true;
-        }
-        if (shouldInsert) {
-          newState.insert(i, todo);
-          inserted = true;
-          break;
-        }
-      }
-      if (!inserted) {
-        newState.add(todo);
-      }
-      state = AsyncData(newState);
-    }
+
+    final List<Todo> updatedTodos =
+        await _todosRepository!.getTodos(_sortingOption);
+    state = AsyncData(updatedTodos);
   }
 
   Future<void> updateTodo(Todo updatedTodo) async {
     await _todosRepository!.updateTodo(updatedTodo);
-    List<Todo> newState = [...state.value!];
 
-    if (_sortingOption == SortingOption.manual) {
-      int index = newState.indexWhere((todo) => todo.id == updatedTodo.id);
-      if (index != -1) {
-        newState[index] = updatedTodo;
-      }
-    } else {
-      newState.removeWhere((todo) => todo.id == updatedTodo.id);
-      bool inserted = false;
-      for (int i = 0; i < newState.length; i++) {
-        if (_shouldInsertBefore(updatedTodo, newState[i])) {
-          newState.insert(i, updatedTodo);
-          inserted = true;
-          break;
-        }
-      }
-      if (!inserted) {
-        newState.add(updatedTodo);
-      }
-    }
-
-    state = AsyncData(newState);
-  }
-
-  bool _shouldInsertBefore(Todo updatedTodo, Todo currentTodo) {
-    switch (_sortingOption) {
-      case SortingOption.alphaAsc:
-        return updatedTodo.text.compareTo(currentTodo.text) < 0;
-      case SortingOption.alphaDesc:
-        return updatedTodo.text.compareTo(currentTodo.text) > 0;
-      case SortingOption.duedateAsc:
-        return updatedTodo.dueDateTime != null &&
-            currentTodo.dueDateTime != null &&
-            updatedTodo.dueDateTime!.isBefore(currentTodo.dueDateTime!);
-      case SortingOption.duedateDesc:
-        return updatedTodo.dueDateTime != null &&
-            currentTodo.dueDateTime != null &&
-            updatedTodo.dueDateTime!.isAfter(currentTodo.dueDateTime!);
-      default:
-        return false;
-    }
+    final List<Todo> updatedTodos =
+        await _todosRepository!.getTodos(_sortingOption);
+    state = AsyncData(updatedTodos);
   }
 
   Future<void> deleteTodo(Todo todo) async {
     await _todosRepository!.deleteTodo(todo);
     ref.read(totalRowsProvider.notifier).decrementRows();
 
-    List<Todo> newState = state.value!.where((t) => t.id != todo.id).toList();
-
-    newState = _sortTodos(newState, _sortingOption);
-
-    state = AsyncData(newState);
-  }
-
-  List<Todo> _sortTodos(List<Todo> todos, SortingOption sortingOption) {
-    switch (sortingOption) {
-      case SortingOption.manual:
-        todos.sort((a, b) => a.todoIndex.compareTo(b.todoIndex));
-        break;
-      case SortingOption.alphaAsc:
-        todos.sort((a, b) => a.text.compareTo(b.text));
-        break;
-      case SortingOption.alphaDesc:
-        todos.sort((a, b) => b.text.compareTo(a.text));
-        break;
-      case SortingOption.duedateAsc:
-        todos.sort((a, b) => (a.dueDateTime ?? DateTime(0))
-            .compareTo(b.dueDateTime ?? DateTime(0)));
-        break;
-      case SortingOption.duedateDesc:
-        todos.sort((a, b) => (b.dueDateTime ?? DateTime(0))
-            .compareTo(a.dueDateTime ?? DateTime(0)));
-        break;
-    }
-    return todos;
+    final List<Todo> updatedTodos =
+        await _todosRepository!.getTodos(_sortingOption);
+    state = AsyncData(updatedTodos);
   }
 
   Future<void> deleteTodosSelection(List<Todo> todosList) async {
