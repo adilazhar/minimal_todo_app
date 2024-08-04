@@ -72,8 +72,7 @@ class _AddTodoDialogState extends ConsumerState<TodoDialog>
             TextField(
               controller: _controller,
               autofocus: true,
-              maxLines: 3,
-              minLines: 1,
+              maxLines: 1,
               focusNode: _textFieldFocusNode,
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.newline,
