@@ -6,7 +6,7 @@ A simple to-do app that helps you track tasks. Add, complete, and organize items
 
 ## Demo
 
-![App Demo](demo/demo.mp4)
+https://github.com/user-attachments/assets/c8463969-3768-4d0c-8759-773acc5243e0
 
 ## Features
 
@@ -54,3 +54,5 @@ A simple to-do app that helps you track tasks. Add, complete, and organize items
 **Challenge**: Sqflite doesn't have a real-time stream-based API, making it difficult to keep the UI in sync with database changes.
 
 **Solution**: Implemented a custom state management solution with Riverpod that manually updates the UI state whenever database operations occur. Created a repository pattern that handles all database interactions and notifies the UI of changes.
+
+
