@@ -19,7 +19,7 @@ https://github.com/user-attachments/assets/c8463969-3768-4d0c-8759-773acc5243e0
 
 ## Tech Stack
 
-- Flutter (2.10+)
+- Flutter (3.4.0 or higher)
 - State Management: Riverpod
 - Database: Sqflite
 
